@@ -1,12 +1,10 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <h1>Das ist eine Navbar</h1>
 </template>
 
 <script>
 export default {
-  name: 'AboutView'
+  name: 'NavbarComponent'
 }
 </script>
 
