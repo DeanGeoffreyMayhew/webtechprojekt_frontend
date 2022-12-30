@@ -1,39 +1,21 @@
 <template>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Aufgabe</th>
-        <th scope="col">Fertig bis</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="ToDo in ToDos" :key="ToDo.id">
-        <th scope="row">{{ToDo.id}}</th>
-        <td>{{ToDo.task}}</td>
-        <td>{{ToDo.dueTo}}</td>
-        <td>{{test(ToDo.done)}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <ToDoCreateForm></ToDoCreateForm>
+  <ToDosTable :ToDos="this.ToDos"></ToDosTable>
 </template>
 
 <script>
+import ToDoCreateForm from '@/components/ToDoCreateForm'
+import ToDosTable from '@/components/ToDosTable'
+
 export default {
   name: 'ToDosView',
+  components: {
+    ToDoCreateForm,
+    ToDosTable
+  },
   data() {
     return {
       ToDos: []
-    }
-  },
-  methods:{
-    test(done){
-      if(done){
-        return "fertig";
-      } else {
-        return "nicht fertig";
-      }
     }
   },
   mounted () {
