@@ -4,38 +4,42 @@
   </button>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-    <form>
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Neues ToDo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <div class="mb-3">
-          <label for="ToDoInput" class="form-label">Aufgabe</label>
-          <input type="text" class="form-control" id="ToDoInput" placeholder="ToDo..." v-model="task">
-        </div>
-        <div class="mb-3">
-          <label for="DueToInput" class="form-label">Fertig bis</label>
-          <input type="text" class="form-control" id="DueToInput" placeholder="DD-MM-YYYY" v-model="dueTo">
-        </div>
-        <div class="mb-3">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="gridCheck" v-model="isDone">
-            <label class="form-check-label" for="gridCheck">
-              erledigt
-            </label>
+        <form class="needs-validation" novalidate>
+          <div class="row mb-3">
+            <label for="ToDoInput" class="col-form-label">Aufgabe:</label>
+            <input type="text" class="form-control" id="ToDoInput" placeholder="ToDo..." v-model="task" required>
+            <div class="invalid-feedback">
+              Bitte ein ToDo eingeben.
+            </div>
           </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <button type="submit" class="btn btn-primary" @click="createToDo">erstellen</button>
+          <div class="row mb-3">
+            <label for="DueToInput" class="col-form-label">Fertig bis:</label>
+            <input type="text" class="form-control" id="DueToInput" placeholder="DD-MM-YYYY" v-model="dueTo" required>
+            <div class="invalid-feedback">
+              Bitte ein Datum im richtigen Format angeben.
+            </div>
           </div>
-          <div class="col">
-            <button type="reset" class="btn btn-danger">löschen</button>
+          <div class="row mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="isDoneInput" v-model="isDone">
+              <label class="form-check-label" for="isDoneInput">erledigt</label>
+            </div>
           </div>
-        </div>
+          <div class="row mt-4">
+            <div class="col">
+              <button type="submit" class="btn btn-primary" @click="createToDo">erstellen</button>
+            </div>
+            <div class="col">
+              <button type="reset" class="btn btn-danger">löschen</button>
+            </div>
+          </div>
+        </form>
       </div>
-    </form>
   </div>
 </template>
 
@@ -51,25 +55,28 @@ export default {
   },
   methods: {
     createToDo(){
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+      const valid = this.validate();
+      if(valid){
+        const myHeaders = new Headers()
+        myHeaders.append("Content-Type", "application/json");
 
-      var raw = JSON.stringify({
-        "task": this.task,
-        "created": this.getDateToday(),
-        "dueTo": this.aggregateDueToDate(this.dueTo),
-        "done": this.isDone
-      });
+        const raw = JSON.stringify({
+          'task': this.task,
+          'created': this.getDateToday(),
+          'dueTo': this.aggregateDueToDate(this.dueTo),
+          'done': this.isDone
+        })
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
+        const requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        }
 
-      fetch("http://localhost:8080/api/v1/toDos", requestOptions)
-        .catch(error => console.log('error', error));
+        fetch("http://localhost:8080/api/v1/toDos", requestOptions)
+          .catch(error => console.log('error', error));
+      }
     },
     getDateToday(){
       let today = new Date()
@@ -84,6 +91,26 @@ export default {
       let year = dueTo.substr(6,10);
 
       return year + "-" + month + "-" + day;
+    },
+    validate(){
+      let valid = true;
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            valid = false;
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+
+      return valid;
     }
   }
 }
