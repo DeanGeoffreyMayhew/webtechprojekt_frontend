@@ -14,6 +14,7 @@
       <td>{{ToDo.task}}</td>
       <td>{{displayDueToDate(ToDo.dueTo)}}</td>
       <td>{{displayDoneState(ToDo.done)}}</td>
+      <td><button type="submit" class="btn btn-danger" @click="deleteToDo(ToDo.id)">löschen</button></td>
     </tr>
     </tbody>
   </table>
@@ -50,6 +51,17 @@ export default {
         }
       })
       return day+month+year;
+    },
+    deleteToDo(id){
+      const requestOptions = {
+        method: 'DELETE',
+        redirect: 'follow'
+      }
+
+      fetch("http://localhost:8080/api/v1/toDos/" + id, requestOptions)
+        .catch(error => console.log('error', error));
+
+      window.location.reload();
     }
   }
 }
