@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-primary sticky-bottom" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+  <button class="btn btn-success sticky-bottom" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
     Neues ToDo erstellen
   </button>
 
@@ -32,10 +32,10 @@
           </div>
           <div class="row mt-4">
             <div class="col">
-              <button type="submit" class="btn btn-primary" @click="createToDo">erstellen</button>
+              <button type="submit" class="btn btn-primary" @click="createToDo">Erstellen</button>
             </div>
             <div class="col">
-              <button type="reset" class="btn btn-danger">löschen</button>
+              <button type="reset" class="btn btn-danger">Leeren</button>
             </div>
           </div>
         </form>
@@ -124,5 +124,4 @@ export default {
   padding: 20px;
   border-radius: 30px;
 }
-
 </style>
