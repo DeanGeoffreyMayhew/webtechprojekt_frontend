@@ -14,7 +14,7 @@
     <tr v-for="ToDo in ToDos" :key="ToDo.id">
       <th scope="row">{{ToDo.id}}</th>
       <td>{{ToDo.task}}</td>
-      <td>{{displayDueToDate(ToDo.dueTo)}}</td>
+      <td>{{ displayDate(ToDo.dueTo) }}</td>
       <td>{{displayDoneState(ToDo.done)}}</td>
       <td><button type="button" class="btn btn-warning" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" @click="setActiveToDo(ToDo.id)">Bearbeiten</button></td>
       <td><button type="button" class="btn btn-danger" @click="deleteToDo(ToDo.id)">Löschen</button></td>
@@ -67,8 +67,8 @@ export default {
   name: 'ToDosTable',
   data() {
     return {
-      activeToDo: null,
-      activeToDoCreated: null,
+      activeToDoId: null,
+      created: null,
       task: '',
       dueTo: '',
       isDone: false
@@ -88,20 +88,36 @@ export default {
         return "nicht fertig";
       }
     },
-    displayDueToDate(dueTo){
+    displayDate(date){
       let year;
       let month;
       let day;
-      dueTo.forEach((x, index) => {
+      date.forEach((x, index) => {
         if(index == 0){
           year = "-"+x;
         } else if(index == 1){
-          month = "-"+x
+          if(x >= 1 && x <= 9){
+            month = "-0"+x
+          } else {
+            month = "-"+x
+          }
         } else {
-          day = x + "";
+          if(x >= 1 && x <= 9){
+            day = "0" + x;
+          } else {
+            day = "" + x;
+          }
+
         }
       })
       return day+month+year;
+    },
+    aggregateDate(date){
+      let day = date.substr(0,2);
+      let month = date.substr(3,2);
+      let year = date.substr(6,10);
+
+      return year + "-" + month + "-" + day;
     },
     deleteToDo(id){
       const requestOptions = {
@@ -115,60 +131,45 @@ export default {
       window.location.reload();
     },
     setActiveToDo(id){
-      let createdDate;
-      this.activeToDo = id;
+      this.activeToDoId = id;
 
       const requestOptions = {
         method: 'GET',
         redirect: 'follow'
       }
 
-      fetch("http://localhost:8080/api/v1/toDos/" + this.activeToDo, requestOptions)
+      fetch("http://localhost:8080/api/v1/toDos/" + this.activeToDoId, requestOptions)
         .then(response => response.json())
         .then(result => {
           this.task = result.task
-          this.dueTo = result.dueTo
-          result.created.forEach((value, index) =>{
-            if(index == 0){
-              createdDate = value;
-            } else {
-              createdDate = createdDate + "-" + value
-            }
-          })
-          this.activeToDoCreated = createdDate
+          this.dueTo = this.displayDate(result.dueTo)
+          this.created = this.displayDate(result.created)
           this.isDone = result.done
         }).catch(error => console.log('error', error));
     },
     updateToDo(){
       const valid = this.validate();
       if(valid){
-        var myHeaders = new Headers();
+        const myHeaders = new Headers()
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-          "task": this.task,
-          "created": this.activeToDoCreated,
-          "dueTo": "2022-11-12",
+        const raw = JSON.stringify({
+          'task': this.task,
+          'created': this.aggregateDate(this.created),
+          'dueTo': this.aggregateDate(this.dueTo),
           'done': this.isDone
-        });
+        })
 
-        var requestOptions = {
+        const requestOptions = {
           method: 'PUT',
           headers: myHeaders,
           body: raw,
           redirect: 'follow'
-        };
+        }
 
-        fetch("http://localhost:8080/api/v1/toDos/" + this.activeToDo, requestOptions)
+        fetch("http://localhost:8080/api/v1/toDos/" + this.activeToDoId, requestOptions)
           .catch(error => console.log('error', error));
       }
-    },
-    aggregateDueToDate(dueTo){
-      let day = dueTo.substr(0,2);
-      let month = dueTo.substr(3,2);
-      let year = dueTo.substr(6,10);
-
-      return year + "-" + month + "-" + day;
     },
     validate(){
       let valid = true;
