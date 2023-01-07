@@ -64,7 +64,8 @@ export default {
           'task': this.task,
           'created': this.getDateToday(),
           'dueTo': this.aggregateDueToDate(this.dueTo),
-          'done': this.isDone
+          'done': this.isDone,
+          'owner': 'AUSTAUSCHEN'
         })
 
         const requestOptions = {

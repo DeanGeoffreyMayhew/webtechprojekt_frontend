@@ -71,7 +71,8 @@ export default {
       created: null,
       task: '',
       dueTo: '',
-      isDone: false
+      isDone: false,
+      claims: []
     }
   },
   props:{
@@ -132,6 +133,7 @@ export default {
     },
     setActiveToDo(id){
       this.activeToDoId = id;
+      console.log(this.claims.email, "--")
 
       const requestOptions = {
         method: 'GET',
@@ -157,7 +159,8 @@ export default {
           'task': this.task,
           'created': this.aggregateDate(this.created),
           'dueTo': this.aggregateDate(this.dueTo),
-          'done': this.isDone
+          'done': this.isDone,
+          'owner': 'AUSTAUSCHEN'
         })
 
         const requestOptions = {
@@ -190,7 +193,7 @@ export default {
       })
 
       return valid;
-    }
+    },
   }
 }
 </script>

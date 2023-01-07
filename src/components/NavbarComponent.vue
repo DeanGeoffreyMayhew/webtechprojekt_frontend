@@ -10,6 +10,9 @@
           <router-link class="nav-link" to="/">Home</router-link>
           <router-link class="nav-link" to="/todos">ToDos</router-link>
           <router-link class="nav-link" to="/about">About</router-link>
+          <router-link to="/login" v-if="authState && !authState.isAuthenticated">Login</router-link>
+          <router-link to="/profile" v-if="authState && authState.isAuthenticated">Protected Profile</router-link>
+            <button v-if="authState && authState.isAuthenticated" v-on:click="logout()">Logout</button>
         </div>
       </div>
     </div>
@@ -18,7 +21,12 @@
 
 <script>
 export default {
-  name: 'NavbarComponent'
+  name: 'NavbarComponent',
+  methods: {
+    async logout () {
+      await this.$auth.signOut()
+    }
+  }
 }
 </script>
 

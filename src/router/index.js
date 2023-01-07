@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import ToDosView from '../views/ToDosView.vue'
+import LoginComponent from '@/components/LoginComponent'
+import { LoginCallback, navigationGuard } from '@okta/okta-vue'
+import ProfileComponent from '@/components/ProfileComponent'
 
 const routes = [
   {
@@ -17,7 +20,23 @@ const routes = [
   {
     path: '/todos',
     name: 'todos',
-    component: ToDosView
+    component: ToDosView,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginComponent
+  },
+  {
+    path: '/login/callback',
+    component: LoginCallback
+  },
+  {
+    path: '/profile',
+    component: ProfileComponent,
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 
@@ -26,5 +45,7 @@ const router = createRouter({
   linkActiveClass: 'active',
   routes
 })
+
+router.beforeEach(navigationGuard)
 
 export default router

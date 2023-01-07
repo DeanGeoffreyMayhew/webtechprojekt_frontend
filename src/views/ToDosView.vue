@@ -15,7 +15,8 @@ export default {
   },
   data() {
     return {
-      ToDos: []
+      ToDos: [],
+      claims: ''
     }
   },
   mounted () {
@@ -24,7 +25,7 @@ export default {
       redirect: 'follow'
     };
 
-    fetch("http://localhost:8080/api/v1/toDos", requestOptions)
+    fetch("http://localhost:8080/api/v1/toDos?owner=AUSTAUSCHEN", requestOptions)
       .then(response => response.json())
       .then(result => result.forEach(todo => {
         this.ToDos.push(todo)
