@@ -81,6 +81,9 @@ export default {
       required: true
     }
   },
+  async created(){
+    await this.setup()
+  },
   methods:{
     displayDoneState(done) {
       if(done){
@@ -133,7 +136,6 @@ export default {
     },
     setActiveToDo(id){
       this.activeToDoId = id;
-      console.log(this.claims.email, "--")
 
       const requestOptions = {
         method: 'GET',
@@ -160,7 +162,7 @@ export default {
           'created': this.aggregateDate(this.created),
           'dueTo': this.aggregateDate(this.dueTo),
           'done': this.isDone,
-          'owner': 'AUSTAUSCHEN'
+          'owner': this.claims.email
         })
 
         const requestOptions = {
@@ -194,6 +196,13 @@ export default {
 
       return valid;
     },
+    async setup(){
+      if(this.$root.authState.isAuthenticated){
+        this.claims = await this.$auth.getUser()
+      } else {
+        this.claims.email = "kein Nutzer"
+      }
+    }
   }
 }
 </script>

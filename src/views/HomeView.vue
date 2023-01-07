@@ -1,18 +1,14 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="ToDo Liste"/>
+    <img class="mb-2" alt="Vue logo" src="../assets/ToDoListLogo.jpeg">
+    <p class="text-center">Herzlich willkommen bei der ToDo Liste.</p>
+    <p class="text-center">Einfach anmelden und eine eigene ToDo Liste erstellen oder mit allen Nutzern dieselbe ToDo Liste benutzen.</p>
+    <p class="text-center">Viel Spaß!</p>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'HomeView',
-  components: {
-    HelloWorld
-  }
 }
 </script>

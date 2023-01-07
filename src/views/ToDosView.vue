@@ -16,21 +16,34 @@ export default {
   data() {
     return {
       ToDos: [],
-      claims: ''
+      claims: []
     }
   },
-  mounted () {
-    const requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
-    };
+  async created(){
+    await this.setup()
+    this.getToDos()
+  },
+  methods:{
+    async setup(){
+      if(this.$root.authState.isAuthenticated){
+        this.claims = await this.$auth.getUser()
+      } else {
+        this.claims.email = "kein Nutzer"
+      }
+    },
+    getToDos () {
+      const requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+      };
 
-    fetch("http://localhost:8080/api/v1/toDos?owner=AUSTAUSCHEN", requestOptions)
-      .then(response => response.json())
-      .then(result => result.forEach(todo => {
-        this.ToDos.push(todo)
-      }))
-      .catch(error => console.log('error', error));
+      fetch("http://localhost:8080/api/v1/toDos?owner="+this.claims.email, requestOptions)
+        .then(response => response.json())
+        .then(result => result.forEach(todo => {
+          this.ToDos.push(todo)
+        }))
+        .catch(error => console.log('error', error));
+    }
   }
 }
 </script>

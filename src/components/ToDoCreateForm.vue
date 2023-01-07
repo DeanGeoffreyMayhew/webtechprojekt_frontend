@@ -3,7 +3,7 @@
     Neues ToDo erstellen
   </button>
 
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas offcanvas-bottom h-auto" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Neues ToDo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -50,8 +50,12 @@ export default {
     return {
       task: '',
       dueTo: '',
-      isDone: false
+      isDone: false,
+      claims: []
     }
+  },
+  async created(){
+    await this.setup()
   },
   methods: {
     createToDo(){
@@ -65,7 +69,7 @@ export default {
           'created': this.getDateToday(),
           'dueTo': this.aggregateDueToDate(this.dueTo),
           'done': this.isDone,
-          'owner': 'AUSTAUSCHEN'
+          'owner': this.claims.email
         })
 
         const requestOptions = {
@@ -112,6 +116,15 @@ export default {
       })
 
       return valid;
+    },
+    async setup(){
+      if(this.$root.authState.isAuthenticated){
+        this.claims = await this.$auth.getUser()
+        console.log(this.claims.email, 'loggedIn')
+      }else {
+        this.claims.email = "kein Nutzer"
+      }
+      console.log(this.claims.email, 'loggedOut')
     }
   }
 }
