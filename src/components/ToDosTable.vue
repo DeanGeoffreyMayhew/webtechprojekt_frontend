@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="ToDo in ToDos" :key="ToDo.id">
+    <tr class="forTesting" v-for="ToDo in ToDos" :key="ToDo.id">
       <th scope="row">{{ToDo.id}}</th>
       <td>{{ToDo.task}}</td>
       <td>{{ displayDate(ToDo.dueTo) }}</td>
@@ -197,7 +197,7 @@ export default {
       return valid;
     },
     async setup(){
-      if(this.$root.authState.isAuthenticated){
+      if(this.$root.authState && this.$root.authState.isAuthenticated){
         this.claims = await this.$auth.getUser()
       } else {
         this.claims.email = "kein Nutzer"
