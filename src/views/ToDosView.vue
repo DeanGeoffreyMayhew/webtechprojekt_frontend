@@ -26,7 +26,7 @@ export default {
   },
   methods:{
     async setup(){
-      if(this.$root.authState.isAuthenticated){
+      if(this.$root.authState && this.$root.authState.isAuthenticated){
         this.claims = await this.$auth.getUser()
       } else {
         this.claims.email = "kein Nutzer"
